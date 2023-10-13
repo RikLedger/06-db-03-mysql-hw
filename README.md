@@ -2,39 +2,37 @@
 
 ## Задача 1
 
-Используя Docker, поднимите инстанс MySQL (версию 8). Данные БД сохраните в volume.
+Используя `Docker`, поднимите инстанс `MySQL (версию 8)`. Данные БД сохраните в volume.
 
-Изучите [бэкап БД](https://github.com/netology-code/virt-homeworks/tree/virt-11/06-db-03-mysql/test_data) и 
-восстановитесь из него.
+*Изучите [бэкап БД](https://github.com/netology-code/virt-homeworks/tree/virt-11/06-db-03-mysql/test_data) и 
+восстановитесь из него.*
 
-Перейдите в управляющую консоль `mysql` внутри контейнера.
+* Перейдите в управляющую консоль `mysql` внутри контейнера.
 
-Используя команду `\h`, получите список управляющих команд.
+* Используя команду `\h`, получите список управляющих команд.
 
-Найдите команду для выдачи статуса БД и **приведите в ответе** из её вывода версию сервера БД.
+* Найдите команду для выдачи статуса БД и **приведите в ответе** из её вывода версию сервера БД.
 
-Подключитесь к восстановленной БД и получите список таблиц из этой БД.
+* Подключитесь к восстановленной БД и получите список таблиц из этой БД.
 
 **Приведите в ответе** количество записей с `price` > 300.
-
-В следующих заданиях мы будем продолжать работу с этим контейнером.
 
 ## Решение:
 
 1. *С использованием [docker-compose.yaml](docker-compose.yaml) поднимаю инстанс MySQL*
 
-2. *Восстанавливаюсь из бэкапа:*
+2. Восстанавливаюсь из бэкапа:
 ```bash
-[baldin@localhost ~]$ sudo docker cp test_dump.sql mysql:/tmp
-[sudo] пароль для baldin: 
+[gorbacev@localhost ~]$ sudo docker cp test_dump.sql mysql:/tmp
+[sudo] пароль для gorbacev: 
 Successfully copied 4.1kB to mysql:/tmp
-[baldin@localhost ~]$ sudo docker exec -it mysql bash
+[gorbacev@localhost ~]$ sudo docker exec -it mysql bash
 bash-4.4# ls /tmp
 test_dump.sql
 bash-4.4# mysql -u root -p test_db < /tmp/test_dump.sql
 Enter password:
 ```
-3. *Перехожу в управляющую консоль*
+3. Перехожу в управляющую консоль
 ```bash
 bash-4.4# mysql -u root -p
 Enter password: 
@@ -52,7 +50,7 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
 mysql> 
 ```
-4. *Проверяю статус сервера БД при помощи команды `\s`*
+4. Проверяю статус сервера БД при помощи команды `\s`
 ```bash
 mysql> \s
 --------------
@@ -74,12 +72,12 @@ Client characterset:	latin1
 Conn.  characterset:	latin1
 UNIX socket:		/var/run/mysqld/mysqld.sock
 Binary data as:		Hexadecimal
-Uptime:			6 min 17 sec
+Uptime:			8 min 22 sec
 
 Threads: 2  Questions: 35  Slow queries: 0  Opens: 138  Flush tables: 3  Open tables: 56  Queries per second avg: 0.092
 --------------
 ```
-5. *Вывожу список таблиц из восстановленной БД*
+5. Вывожу список таблиц из восстановленной БД
 ```bash
 mysql> USE test_db;
 Reading table information for completion of table and column names
@@ -107,15 +105,15 @@ mysql> SELECT COUNT(*) FROM orders WHERE price > '300';
 ---
 ## Задача 2
 
-Создайте пользователя test в БД c паролем test-pass, используя:
+Создайте пользователя `test` в БД c паролем `test-pass`, используя:
 
-- плагин авторизации mysql_native_password
-- срок истечения пароля — 180 дней 
-- количество попыток авторизации — 3 
-- максимальное количество запросов в час — 100
+- плагин авторизации `mysql_native_password`
+- срок истечения пароля — `180 дней` 
+- количество попыток авторизации — `3` 
+- максимальное количество запросов в час — `100`
 - аттрибуты пользователя:
-    - Фамилия "Pretty"
-    - Имя "James".
+    - Фамилия `"Pretty"`
+    - Имя `"James"`.
 
 Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
     
@@ -124,7 +122,7 @@ mysql> SELECT COUNT(*) FROM orders WHERE price > '300';
 
 ## Решение:
 
-1. *Завел пользователя с указанными параметрами и предоставил привелегии на SELECT*
+1. Завел пользователя с указанными параметрами и предоставил привелегии на `SELECT`
 ```bash
 mysql> CREATE USER 'test' IDENTIFIED WITH mysql_native_password BY 'test-pass'
     -> PASSWORD EXPIRE INTERVAL 180 DAY
@@ -137,7 +135,7 @@ Query OK, 0 rows affected (0.02 sec)
 mysql> GRANT SELECT ON `test_db`.* TO 'test';
 Query OK, 0 rows affected (0.01 sec)
 ```
-2. *Данные по пользователю `test`*
+2. Данные по пользователю `test`
 ```bash
 mysql> SELECT * FROM INFORMATION_SCHEMA.USER_ATTRIBUTES WHERE USER='test';
 +------+------+----------------------------------------------+
@@ -166,7 +164,7 @@ mysql> SELECT * FROM INFORMATION_SCHEMA.USER_ATTRIBUTES WHERE USER='test';
 mysql> SET profiling = 1;
 Query OK, 0 rows affected, 1 warning (0.01 sec)
 ```
-2. *Ниже в выводе видно, что используется InnoDB*
+2. Ниже в выводе видно, что используется `InnoDB`
 ```bash
 
 mysql> SELECT table_schema,table_name,engine FROM information_schema.tables WHERE table_schema = DATABASE();
@@ -177,7 +175,7 @@ mysql> SELECT table_schema,table_name,engine FROM information_schema.tables WHER
 +--------------+------------+--------+
 1 row in set (0.02 sec)
 ```
-3. *Меняю на 'MyISAM', потом снова на 'InnoDB' и смотрю время выполнения*
+3. Меняю на 'MyISAM', потом снова на 'InnoDB' и смотрю время выполнения
 ```bash
 mysql> ALTER table orders engine = 'MyISAM';
 Query OK, 5 rows affected (0.09 sec)
@@ -203,21 +201,21 @@ mysql> show profiles;
 ---
 ## Задача 4 
 
-Изучите файл `my.cnf` в директории /etc/mysql.
+Изучите файл `my.cnf` в директории `/etc/mysql`.
 
-Измените его согласно ТЗ (движок InnoDB):
+Измените его согласно ТЗ (движок `InnoDB`):
 
 - скорость IO важнее сохранности данных;
 - нужна компрессия таблиц для экономии места на диске;
-- размер буффера с незакомиченными транзакциями 1 Мб;
-- буффер кеширования 30% от ОЗУ;
-- размер файла логов операций 100 Мб.
+- размер буффера с незакомиченными транзакциями `1 Мб`;
+- буффер кеширования `30%` от ОЗУ;
+- размер файла логов операций `100 Мб`.
 
 Приведите в ответе изменённый файл `my.cnf`.
 
 ## Решение:
 
-*Мой файл `my.cnf` находился в директории /etc. Я так понимаю, для выполнения условий ТЗ его нужно привести к следующему виду:*
+Мой файл `my.cnf` находился в директории `/etc`. Я так понимаю, для выполнения условий ТЗ его нужно привести к следующему виду:
 ```bash
 [mysqld]
 skip-host-cache
