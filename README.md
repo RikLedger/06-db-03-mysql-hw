@@ -117,7 +117,7 @@ mysql> SELECT COUNT(*) FROM orders WHERE price > '300';
 
 Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
     
-Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES, получите данные по пользователю `test` и 
+Используя таблицу `INFORMATION_SCHEMA.USER_ATTRIBUTES`, получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
 
 ## Решение:
