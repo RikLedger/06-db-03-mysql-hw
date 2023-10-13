@@ -92,7 +92,7 @@ mysql> SHOW TABLES;
 +-------------------+
 1 row in set (0.00 sec)
 ```
-6. *Вывод количества записей с `price > 300`*
+6. Вывод количества записей с `price > 300`
 ```bash
 mysql> SELECT COUNT(*) FROM orders WHERE price > '300';
 +----------+
@@ -159,7 +159,7 @@ mysql> SELECT * FROM INFORMATION_SCHEMA.USER_ATTRIBUTES WHERE USER='test';
 
 ## Решение:
 
-1. *Устанавливаю профилирование `SET profiling = 1`*
+1. Устанавливаю профилирование `SET profiling = 1`
 ```bash
 mysql> SET profiling = 1;
 Query OK, 0 rows affected, 1 warning (0.01 sec)
@@ -175,7 +175,7 @@ mysql> SELECT table_schema,table_name,engine FROM information_schema.tables WHER
 +--------------+------------+--------+
 1 row in set (0.02 sec)
 ```
-3. Меняю на 'MyISAM', потом снова на 'InnoDB' и смотрю время выполнения
+3. Меняю на `MyISAM`, потом снова на `InnoDB` и смотрю время выполнения
 ```bash
 mysql> ALTER table orders engine = 'MyISAM';
 Query OK, 5 rows affected (0.09 sec)
